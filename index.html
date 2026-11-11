@@ -186,7 +186,8 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwWribsn2tDfBFQBTYpveprAMKcYm8ftcYWiFJn7xZkSeQ4vTjIUdqJkJSB_0acJT2m/exec";
+    // COLAR A SUA NOVA URL AQUI
+    const GOOGLE_SCRIPT_URL = "SUA_URL_DO_GOOGLE_SCRIPT_AQUI";
 
     const challenges = [
         { title: "1. O Resumo do Livro", desc: "Vocês precisam que a IA resuma um livro de 200 páginas sem inventar fatos. Crie um prompt aplicando as regras para evitar alucinações.", weight: 1 },
@@ -203,7 +204,8 @@
 
     let meuNome = "";
     let minhaTurma = "";
-    let desafioAtualIdx = 0;
+    // CORREÇÃO APLICADA AQUI: Inicia em -1 para garantir que a transição para o Desafio 0 seja percebida e a tela seja desenhada.
+    let desafioAtualIdx = -1; 
     let jaEnviouAtual = false;
     let pollInterval = null;
     let timerInterval = null;
@@ -228,7 +230,7 @@
             if (data.status === "ok") {
                 document.getElementById("screen-lobby").classList.add("hidden");
                 document.getElementById("screen-waiting").classList.remove("hidden");
-                document.getElementById("welcome-msg").innerText = `Olá, ${meuNome}! Você está conectado. Aguarde o professor iniciar.`;
+                document.getElementById("welcome-msg").innerText = `Olá, ${meuNome}! Você está conectado(a). Aguarde o professor iniciar.`;
                 iniciarSincronizacao();
             } else {
                 alert("Erro ao conectar: " + data.msg);
@@ -241,7 +243,7 @@
 
     function entrarAdmin() {
         let senha = document.getElementById("admin-pass").value;
-        if (senha === "admin123") { // Senha simples para o professor
+        if (senha === "admin123") {
             document.getElementById("screen-lobby").classList.add("hidden");
             document.getElementById("screen-admin").classList.remove("hidden");
         } else {
@@ -269,7 +271,6 @@
     function iniciarSincronizacao() {
         if (pollInterval) clearInterval(pollInterval);
         
-        // Verifica o estado global na planilha a cada 4 segundos
         pollInterval = setInterval(() => {
             fetch(GOOGLE_SCRIPT_URL, { method: 'GET' })
             .then(res => res.json())
@@ -293,9 +294,10 @@
             document.getElementById("screen-ranking").classList.add("hidden");
         } 
         else if (fase === "jogando") {
+            // Como agora o index inicial é -1, quando o professor enviar o 0, entrará neste 'if' perfeitamente
             if (desafioAtualIdx !== novoDesafio) {
                 desafioAtualIdx = novoDesafio;
-                jaEnviouAtual = false; // Novo desafio, libera envio
+                jaEnviouAtual = false; 
                 carregarDesafioNaArena();
             }
             document.getElementById("screen-waiting").classList.add("hidden");
